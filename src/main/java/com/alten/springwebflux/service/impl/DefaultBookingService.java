@@ -18,33 +18,14 @@ public class DefaultBookingService implements IBookingService {
 
     @Override
     public Flux<BookingDTO> getAll() {
-//        return bookingRepository.findAll()
-//                .map(booking -> modelMapper.map(booking, BookingDTO.class));
-
         return bookingRepository.findAll()
-                .map(booking -> {
-                    BookingDTO bookingDTO = new BookingDTO();
-                    bookingDTO.setId(booking.getId());
-                    bookingDTO.setDate(booking.getDate());
-                    bookingDTO.setTime(booking.getTime());
-                    bookingDTO.setUserId(booking.getUser().getId());
-
-                    return  bookingDTO;
-                });
+                .map(booking -> modelMapper.map(booking, BookingDTO.class));
     }
 
     @Override
     public Mono<BookingDTO> getById(String id) {
         return bookingRepository.findById(id)
-                .map(booking -> {
-                    BookingDTO bookingDTO = new BookingDTO();
-                    bookingDTO.setId(booking.getId());
-                    bookingDTO.setDate(booking.getDate());
-                    bookingDTO.setTime(booking.getTime());
-                    bookingDTO.setUserId(booking.getUser().getId());
-
-                    return  bookingDTO;
-                });
+                .map(booking -> modelMapper.map(booking, BookingDTO.class));
     }
 
     @Override
