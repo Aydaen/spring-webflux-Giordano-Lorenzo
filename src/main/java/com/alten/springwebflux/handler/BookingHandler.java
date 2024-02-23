@@ -4,6 +4,8 @@ import com.alten.springwebflux.dto.BookingDTO;
 import com.alten.springwebflux.dto.UserDTO;
 import com.alten.springwebflux.model.Booking;
 import com.alten.springwebflux.repository.UserRepository;
+import com.alten.springwebflux.service.api.IBookingService;
+import com.alten.springwebflux.service.api.IUserService;
 import com.alten.springwebflux.service.impl.DefaultBookingService;
 import com.alten.springwebflux.service.impl.DefaultUserService;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +17,16 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 @RequiredArgsConstructor
 public class BookingHandler {
-    private final DefaultBookingService bookingService;
-    private final DefaultUserService userService;
+    private final IBookingService bookingService;
+    private final IUserService userService;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
 
@@ -33,8 +38,7 @@ public class BookingHandler {
 
         return ServerResponse
                 .status(HttpStatus.OK)
-                .contentType(APPLICATION_JSON)
-                .body(bookingFlux, Booking.class);
+                .body(bookingFlux, BookingDTO.class);
     }
 
     public Mono<ServerResponse> getBookingById(ServerRequest request) {
@@ -46,7 +50,7 @@ public class BookingHandler {
                         ServerResponse
                                 .status(HttpStatus.OK)
                                 .contentType(APPLICATION_JSON)
-                                .body(bookingDTOMono, Booking.class))
+                                .body(bookingDTOMono, BookingDTO.class))
                 .switchIfEmpty(notFoundResponse);
     }
 
@@ -105,8 +109,33 @@ public class BookingHandler {
         return bookingService.delete(bookingId)
                 .then(ServerResponse
                         .status(HttpStatus.NO_CONTENT)
-                        .contentType(APPLICATION_JSON)
                         .build())
                 .switchIfEmpty(notFoundResponse);
+    }
+
+    public Mono<ServerResponse> getBookingByDateRange(ServerRequest request) {
+        Optional<String> fromDate = request.queryParam("fromDate");
+        Optional<String> toDate = request.queryParam("toDate");
+
+        if (fromDate.isEmpty()) {
+            return ServerResponse
+                    .status(HttpStatus.BAD_REQUEST)
+                    .build();
+        }
+
+        if (toDate.isEmpty()) {
+            Flux<BookingDTO> bookingDTOFlux = bookingService.getByDate(fromDate.get());
+
+            return ServerResponse
+                            .status(HttpStatus.OK)
+                            .body(bookingDTOFlux, BookingDTO.class);
+
+        }
+
+        Flux<BookingDTO> bookingDTOFlux = bookingService.getByDateRange(fromDate.get(), toDate.get());
+
+        return ServerResponse
+                        .status(HttpStatus.OK)
+                        .body(bookingDTOFlux, BookingDTO.class);
     }
 }

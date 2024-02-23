@@ -18,6 +18,7 @@ public class BookingRouter {
         return RouterFunctions.route()
                 .GET("/router/getAllBookings", bookingHandler::getAllBookings)
                 .GET("/router/getBookingById/{id}", bookingHandler::getBookingById)
+                .GET("/router/getBookingsByDateRange/", bookingHandler::getBookingByDateRange)
                 .POST("/router/createBooking", bookingHandler::createBooking)
                 .PUT("/router/updateBooking/{id}", bookingHandler::updateBooking)
                 .DELETE("/router/deleteBooking/{id}", bookingHandler::deleteBooking)

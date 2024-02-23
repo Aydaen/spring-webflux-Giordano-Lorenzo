@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class DefaultBookingService implements IBookingService {
@@ -25,6 +27,23 @@ public class DefaultBookingService implements IBookingService {
     @Override
     public Mono<BookingDTO> getById(String id) {
         return bookingRepository.findById(id)
+                .map(booking -> modelMapper.map(booking, BookingDTO.class));
+    }
+
+    @Override
+    public Flux<BookingDTO> getByDate(String fromDateString) {
+        LocalDate fromDate = LocalDate.parse(fromDateString);
+
+            return bookingRepository.findBookingsByDate(fromDate)
+                    .map(booking -> modelMapper.map(booking, BookingDTO.class));
+    }
+
+    @Override
+    public Flux<BookingDTO> getByDateRange(String fromDateString, String toDateString) {
+        LocalDate fromDate = LocalDate.parse(fromDateString);
+        LocalDate toDate = LocalDate.parse(toDateString);
+
+        return bookingRepository.findBookingsByDateBetween(fromDate, toDate)
                 .map(booking -> modelMapper.map(booking, BookingDTO.class));
     }
 
