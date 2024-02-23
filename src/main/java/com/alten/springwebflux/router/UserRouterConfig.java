@@ -1,6 +1,5 @@
 package com.alten.springwebflux.router;
 
-import com.alten.springwebflux.handler.BookingHandler;
 import com.alten.springwebflux.handler.UserHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -11,9 +10,8 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
 @RequiredArgsConstructor
-public class RouterConfig {
+public class UserRouterConfig {
     private final UserHandler userHandler;
-    private final BookingHandler bookingHandler;
 
     @Bean
     public RouterFunction<ServerResponse> routerFunctionUser() {
@@ -25,16 +23,4 @@ public class RouterConfig {
                 .DELETE("/router/deleteUser/{id}", userHandler::deleteUser)
                 .build();
     }
-
-    @Bean
-    public RouterFunction<ServerResponse> routerFunctionBooking() {
-        return RouterFunctions.route()
-                .GET("/router/getAllBookings", bookingHandler::getAllBookings)
-                .GET("/router/getBookingById/{id}", bookingHandler::getBookingById)
-                .POST("/router/createBooking", bookingHandler::createBooking)
-                .PUT("/router/updateBooking/{id}", bookingHandler::updateBooking)
-                .DELETE("/router/deleteBooking/{id}", bookingHandler::deleteBooking)
-                .build();
-    }
-
 }
