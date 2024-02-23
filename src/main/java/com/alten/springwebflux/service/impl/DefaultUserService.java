@@ -39,9 +39,9 @@ public class DefaultUserService implements IUserService {
     public Mono<UserDTO> update(String id, UserDTO dto) {
         return userRepository.findById(id)
                 .flatMap(existingUser -> {
-                    User updatedUser = modelMapper.map(dto, User.class);
-                    updatedUser.setId(existingUser.getId());
-                    return userRepository.save(updatedUser);
+                    existingUser.setName(dto.getName() == null ? existingUser.getName() : dto.getName());
+                    existingUser.setEmail(dto.getEmail() == null ? existingUser.getEmail() : dto.getEmail());
+                    return userRepository.save(existingUser);
                 })
                 .map(updatedUser -> modelMapper.map(updatedUser, UserDTO.class));
     }

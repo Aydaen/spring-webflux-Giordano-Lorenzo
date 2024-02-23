@@ -39,9 +39,9 @@ public class DefaultBookingService implements IBookingService {
     public Mono<BookingDTO> update(String id, BookingDTO dto) {
         return bookingRepository.findById(id)
                 .flatMap(existingBooking -> {
-                    Booking updatedBooking = modelMapper.map(dto, Booking.class);
-                    updatedBooking.setId(existingBooking.getId());
-                    return bookingRepository.save(updatedBooking);
+                    existingBooking.setDate(dto.getDate() == null ? existingBooking.getDate() : dto.getDate());
+                    existingBooking.setTime(dto.getTime() == null ? existingBooking.getTime() : dto.getTime());
+                    return bookingRepository.save(existingBooking);
                 })
                 .map(updatedBooking -> modelMapper.map(updatedBooking, BookingDTO.class));
     }

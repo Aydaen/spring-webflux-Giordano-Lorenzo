@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
 @RequiredArgsConstructor
-public class UserRouterConfig {
+public class UserRouter {
     private final UserHandler userHandler;
 
     @Bean

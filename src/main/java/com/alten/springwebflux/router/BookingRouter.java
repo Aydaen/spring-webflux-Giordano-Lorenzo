@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
 @RequiredArgsConstructor
-public class BookingRouterConfig {
+public class BookingRouter {
     private final BookingHandler bookingHandler;
 
     @Bean
