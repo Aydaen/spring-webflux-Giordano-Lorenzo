@@ -12,7 +12,7 @@ public class BookingDTO {
     private String id;
     @DateTimeFormat(pattern = "MM/dd/YYYY")
     private LocalDate date;
-    @DateTimeFormat(pattern = "HH/mm/ss")
+    @DateTimeFormat(pattern = "HH:mm:ss")
     private LocalTime time;
     private String userId;
 }
