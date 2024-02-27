@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
 @Configuration
 @RequiredArgsConstructor
 public class UserRouter {
@@ -15,12 +17,13 @@ public class UserRouter {
 
     @Bean
     public RouterFunction<ServerResponse> routerFunctionUser() {
-        return RouterFunctions.route()
-                .GET("/router/getAllUsers", userHandler::getAllUsers)
-                .GET("/router/getUserById/{id}", userHandler::getUserById)
-                .POST("/router/createUser", userHandler::createUser)
-                .PUT("/router/updateUser/{id}", userHandler::updateUser)
-                .DELETE("/router/deleteUser/{id}", userHandler::deleteUser)
+        return route()
+                .path("/users", builder -> builder
+                        .GET("", userHandler::getAllUsers)
+                        .GET("/{id}", userHandler::getUserById)
+                        .POST("", userHandler::createUser)
+                        .PUT("/{id}", userHandler::updateUser)
+                        .DELETE("/{id}", userHandler::deleteUser))
                 .build();
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+
 @Configuration
 @RequiredArgsConstructor
 public class BookingRouter {
@@ -15,13 +17,14 @@ public class BookingRouter {
 
     @Bean
     public RouterFunction<ServerResponse> routerFunctionBooking() {
-        return RouterFunctions.route()
-                .GET("/router/getAllBookings", bookingHandler::getAllBookings)
-                .GET("/router/getBookingById/{id}", bookingHandler::getBookingById)
-                .GET("/router/getBookingsByDateRange/", bookingHandler::getBookingByDateRange)
-                .POST("/router/createBooking", bookingHandler::createBooking)
-                .PUT("/router/updateBooking/{id}", bookingHandler::updateBooking)
-                .DELETE("/router/deleteBooking/{id}", bookingHandler::deleteBooking)
+        return route()
+                .path("/bookings", builder -> builder
+                        .GET("", bookingHandler::getAllBookings)
+                        .GET("/{id}", bookingHandler::getBookingById)
+                        .GET("/dateRange/", bookingHandler::getBookingByDateRange)
+                        .POST("", bookingHandler::createBooking)
+                        .PUT("/{id}", bookingHandler::updateBooking)
+                        .DELETE("/{id}", bookingHandler::deleteBooking))
                 .build();
     }
 }

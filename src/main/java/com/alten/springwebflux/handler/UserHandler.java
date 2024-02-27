@@ -1,5 +1,6 @@
 package com.alten.springwebflux.handler;
 
+import com.alten.springwebflux.dto.BookingDTO;
 import com.alten.springwebflux.dto.UserDTO;
 import com.alten.springwebflux.model.User;
 import com.alten.springwebflux.service.impl.DefaultUserService;
@@ -30,7 +31,6 @@ public class UserHandler {
 
         return ServerResponse
                 .status(HttpStatus.OK)
-                .contentType(APPLICATION_JSON)
                 .body(userFlux, User.class);
     }
 
@@ -50,15 +50,15 @@ public class UserHandler {
     public Mono<ServerResponse> createUser(ServerRequest request) {
         Mono<UserDTO> userDTOMono = request.bodyToMono(UserDTO.class);
 
-        return userDTOMono.flatMap(userDTO ->
-                ServerResponse
+        return userDTOMono
+                .flatMap(userService::create)
+                .then(ServerResponse
                         .status(HttpStatus.CREATED)
                         .contentType(APPLICATION_JSON)
-                        .body(userService.create(userDTO), UserDTO.class))
+                        .body(userDTOMono, UserDTO.class))
                 .switchIfEmpty(badRequestResponse);
     }
 
-    // TODO domandare se sia ottimale gestire le eccezioni nei service o con switchifempty
     public Mono<ServerResponse> updateUser(ServerRequest request) {
         String userId = request.pathVariable("id");
 
@@ -80,8 +80,7 @@ public class UserHandler {
 
         return userService.delete(userId)
                 .then(ServerResponse
-                        .status(HttpStatus.NO_CONTENT)
-                        .contentType(APPLICATION_JSON)
+                        .status(HttpStatus.OK)
                         .build())
                 .switchIfEmpty(notFoundResponse);
     }
